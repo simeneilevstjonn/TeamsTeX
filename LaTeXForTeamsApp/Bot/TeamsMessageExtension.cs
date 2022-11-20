@@ -29,10 +29,12 @@ public class TeamsMessageExtension : TeamsActivityHandler
         var createCardData = ((JObject)action.Data).ToObject<CardResponse>();
 
         LatexRenderer renderer = new("C:/Users/Simen/AppData/Local/Temp");
-        string svg = await renderer.LatexToSvg(createCardData.Text);
+        string png = await renderer.LatexToPngString(createCardData.Text);
+
+        
         CardImage image = new()
         {
-            Url = ("data:image/svg+xml;charset=utf-8," + svg).Replace("#", "%23")
+            Url = "data:image/png;base64," + png
         };
 
 

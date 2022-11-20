@@ -9,6 +9,12 @@ using System.Text;
 using static System.Formats.Asn1.AsnWriter;
 using Typography.OpenFont.Tables;
 using System.Diagnostics;
+using CSharpMath.Rendering.FrontEnd;
+using Svg;
+using System.Collections;
+using System.Drawing.Imaging;
+using System.Drawing;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace LaTeXForTeamsApp
 {
@@ -21,7 +27,7 @@ namespace LaTeXForTeamsApp
             this.WorkDir = WorkDir;
         }
 
-        public async Task<string> LatexToSvg(string latex) 
+        public async Task<SvgDocument> LatexToSvg(string latex) 
         {
             // Make work directory
             string id = MakeId();
@@ -60,13 +66,29 @@ namespace LaTeXForTeamsApp
             await dvisvgmProcess.WaitForExitAsync();
 
             // Read svg
-            string svg = File.ReadAllText(string.Format("{0}/{1}/eqn.svg", WorkDir, id));
+            //string svg = File.ReadAllText(string.Format("{0}/{1}/eqn.svg", WorkDir, id));
 
             // Cleanup
-           // Directory.Delete(string.Format("{0}/{1}", WorkDir, id), true);
+            // Directory.Delete(string.Format("{0}/{1}", WorkDir, id), true);
 
-            return svg.ReplaceLineEndings("");
+            //return svg.ReplaceLineEndings("");
 
+            return SvgDocument.Open(string.Format("{0}/{1}/eqn.svg", WorkDir, id));
+
+        }
+
+        public async Task<string> LatexToPngString(string latex) 
+        {
+            SvgDocument svg = await LatexToSvg(latex);
+
+            Bitmap bitmap = svg.Draw();
+
+
+            MemoryStream ms = new();
+            bitmap.Save(ms, ImageFormat.Png);
+            byte[] byteImage = ms.ToArray();
+
+            return Convert.ToBase64String(byteImage);
         }
 
         string MakeId()
