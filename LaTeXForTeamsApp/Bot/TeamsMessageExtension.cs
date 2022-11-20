@@ -16,25 +16,32 @@ public class TeamsMessageExtension : TeamsActivityHandler
         switch (action.CommandId)
         {
             case "createCard":
-                return Task.FromResult(CreateCardCommand(turnContext, action));
+                return CreateCardCommand(turnContext, action);
             case "shareMessage":
                 return Task.FromResult(ShareMessageCommand(turnContext, action));
         }
         return Task.FromResult(new MessagingExtensionActionResponse());
     }
 
-    private MessagingExtensionActionResponse CreateCardCommand(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action)
+    private async Task<MessagingExtensionActionResponse> CreateCardCommand(ITurnContext<IInvokeActivity> turnContext, MessagingExtensionAction action)
     {
         // The user has chosen to create a card by choosing the 'Create Card' context menu command.
         var createCardData = ((JObject)action.Data).ToObject<CardResponse>();
 
-        
+        LatexRenderer renderer = new("C:/Users/Simen/AppData/Local/Temp");
+        string svg = await renderer.LatexToSvg(createCardData.Text);
+        CardImage image = new()
+        {
+            Url = ("data:image/svg+xml;charset=utf-8," + svg).Replace("#", "%23")
+        };
+
 
         var card = new HeroCard
         {
-            Title = "NOT YOUR TITLE!",
+            Title = "Title",
             Subtitle = createCardData.Subtitle,
-            Text = createCardData.Text,
+            Text = "foo",
+            Images = new List<CardImage>() {image}
         };
 
         var attachments = new List<MessagingExtensionAttachment>();
@@ -204,7 +211,7 @@ public class TeamsMessageExtension : TeamsActivityHandler
 
     internal class CardResponse
     {
-        public string Src { get; set; }
+        public string Title { get; set; }
         public string Subtitle { get; set; }
         public string Text { get; set; }
     }
