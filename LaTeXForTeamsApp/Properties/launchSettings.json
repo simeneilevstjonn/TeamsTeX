@@ -1,0 +1,27 @@
+{
+  "profiles": {
+    "Microsoft Teams (browser)": {
+      "commandName": "Project",
+      "dotnetRunMessages": "true",
+      "launchBrowser": true,
+      "launchUrl": "https://teams.microsoft.com/l/app/9319540f-2654-4377-82c8-d2595d1ce414?installAppPackage=true&webjoin=true&appTenantId=da703042-42a9-4fc0-bcc2-d22052da0e81&login_hint=root@y3d7n.onmicrosoft.com",
+      "applicationUrl": "https://localhost:7130;http://localhost:5130",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "hotReloadProfile": "aspnetcore"
+    }
+    //// Uncomment following profile to debug project only (without launching Teams)
+    //,
+    //"LaTeXForTeamsApp": {
+    //  "commandName": "Project",
+    //  "dotnetRunMessages": "true",
+    //  "launchBrowser": true,
+    //  "applicationUrl": "https://localhost:7130;http://localhost:5130",
+    //  "environmentVariables": {
+    //    "ASPNETCORE_ENVIRONMENT": "Development"
+    //  },
+    //  "hotReloadProfile": "aspnetcore"
+    //}
+  }
+}
