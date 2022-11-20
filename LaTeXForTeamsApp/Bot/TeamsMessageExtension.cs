@@ -1,8 +1,8 @@
-﻿using Microsoft.Bot.Builder;
+﻿using CSharpMath.Rendering.FrontEnd;
+using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
 using Microsoft.Bot.Schema.Teams;
-
 using Newtonsoft.Json.Linq;
 
 namespace LaTeXForTeamsApp.Bot;
@@ -17,8 +17,6 @@ public class TeamsMessageExtension : TeamsActivityHandler
         {
             case "createCard":
                 return Task.FromResult(CreateCardCommand(turnContext, action));
-            case "somethingElse":
-                throw new NotImplementedException();
             case "shareMessage":
                 return Task.FromResult(ShareMessageCommand(turnContext, action));
         }
@@ -29,6 +27,8 @@ public class TeamsMessageExtension : TeamsActivityHandler
     {
         // The user has chosen to create a card by choosing the 'Create Card' context menu command.
         var createCardData = ((JObject)action.Data).ToObject<CardResponse>();
+
+        
 
         var card = new HeroCard
         {
@@ -204,7 +204,7 @@ public class TeamsMessageExtension : TeamsActivityHandler
 
     internal class CardResponse
     {
-        public string Title { get; set; }
+        public string Src { get; set; }
         public string Subtitle { get; set; }
         public string Text { get; set; }
     }
