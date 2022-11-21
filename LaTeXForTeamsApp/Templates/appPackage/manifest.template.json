@@ -33,49 +33,30 @@
                     "context": [
                         "compose"
                     ],
-                    "description": "Command to run action to create a Card from Compose Box",
-                    "title": "Create Card",
+                    "description": "Command to run action to create a LaTeX equation card.",
+                    "title": "Create equation",
                     "type": "action",
                     "parameters": [
                         {
-                            "name": "title",
-                            "title": "Card title",
-                            "description": "Title for the card",
-                            "inputType": "text"
+                          "name": "dollar",
+                          "title": "Disable math mode",
+                          "description": "Better for plain text. Equations must be wrapped in $",
+                          "inputType": "toggle"
                         },
                         {
-                            "name": "subTitle",
-                            "title": "Subtitle",
-                            "description": "Subtitle for the card",
-                            "inputType": "text"
-                        },
-                        {
-                            "name": "text",
-                            "title": "Text",
-                            "description": "Text for the card",
-                            "inputType": "textarea"
+                          "name": "text",
+                          "title": "LaTeX source",
+                          "description": "LaTeX source for the equation",
+                          "inputType": "textarea"
                         }
                     ]
-                }
-            ],
-            "messageHandlers": [
-                {
-                    "type": "link",
-                    "value": {
-                        "domains": [
-                            "*.botframework.com"
-                        ]
-                    }
                 }
             ]
         }
     ],
     "configurableTabs": [],
     "staticTabs": [],
-    "permissions": [
-        "identity",
-        "messageTeamMembers"
-    ],
+    "permissions": [],
     "validDomains": [
         "{{state.fx-resource-bot.domain}}"
     ]

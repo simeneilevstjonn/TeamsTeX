@@ -27,7 +27,7 @@ public class TeamsMessageExtension : TeamsActivityHandler
         var createCardData = ((JObject)action.Data).ToObject<CardResponse>();
 
         LatexRenderer renderer = new("C:/Users/Simen/AppData/Local/Temp");
-        (string, bool) img = await renderer.LatexToPngString(createCardData.Text);
+        (string, bool) img = await renderer.LatexToPngString(createCardData.Latex);
         string url = "data:image/png;base64," + img.Item1;
 
     
@@ -55,9 +55,9 @@ public class TeamsMessageExtension : TeamsActivityHandler
 
     internal class CardResponse
     {
-        public string Title { get; set; }
-        public string Subtitle { get; set; }
+        public string Latex { get => Dollar ? Text : string.Format("${0}$", Text); }
         public string Text { get; set; }
+        public bool Dollar { get; set; }
     }
 }
 
