@@ -6,12 +6,12 @@ namespace LaTeXForTeamsApp
 {
     public class CardFactory
     {
-        string AdaptiveCardJSON(string imgUri) => string.Format("{{ \"type\": \"AdaptiveCard\", \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\", \"version\": \"1.4\", \"body\": [ {{ \"type\": \"Image\", \"url\": \"{0}\", \"horizontalAlignment\": \"Center\", \"spacing\": \"None\" }} ] }}", imgUri);
+        string AdaptiveCardJSON(string imgUri, bool small) => string.Format("{{ \"type\": \"AdaptiveCard\", \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\", \"version\": \"1.4\", \"body\": [ {{ \"type\": \"Image\", \"url\": \"{0}\", \"horizontalAlignment\": \"Center\", \"spacing\": \"None\", \"size\": \"{1}\" }} ] }}", imgUri, small ? "small": "");
         
-        public Attachment MakeAdaptiveCard(string imgUri) => new()
+        public Attachment MakeAdaptiveCard(string imgUri, bool small) => new()
         {
             ContentType = "application/vnd.microsoft.card.adaptive",
-            Content = JsonConvert.DeserializeObject(AdaptiveCardJSON(imgUri)),
+            Content = JsonConvert.DeserializeObject(AdaptiveCardJSON(imgUri, small)),
         };
     }
 }

@@ -27,12 +27,12 @@ public class TeamsMessageExtension : TeamsActivityHandler
         var createCardData = ((JObject)action.Data).ToObject<CardResponse>();
 
         LatexRenderer renderer = new("C:/Users/Simen/AppData/Local/Temp");
-        string png = await renderer.LatexToPngString(createCardData.Text);
-        string url = "data:image/png;base64," + png;
+        (string, bool) img = await renderer.LatexToPngString(createCardData.Text);
+        string url = "data:image/png;base64," + img.Item1;
 
     
         CardFactory cardFactory = new();
-        Attachment adaptCard = cardFactory.MakeAdaptiveCard(url);
+        Attachment adaptCard = cardFactory.MakeAdaptiveCard(url, img.Item2);
 
         MessagingExtensionAttachment attach = AttachmentExtensions.ToMessagingExtensionAttachment(adaptCard, adaptCard);
 

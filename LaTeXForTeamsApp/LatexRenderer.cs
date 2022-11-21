@@ -76,20 +76,20 @@ namespace LaTeXForTeamsApp
 
         }
 
-        public async Task<string> LatexToPngString(string latex) 
+        public async Task<(string, bool)> LatexToPngString(string latex) 
         {
             SvgDocument svg = await LatexToSvg(latex);
 
             svg.Fill = new SvgColourServer(Color.White);
 
             Bitmap bitmap = svg.Draw(1024, 0);
-            if (bitmap.Height > 1024) bitmap = svg.Draw(0, 1024); 
+            if (bitmap.Height > 1024) bitmap = svg.Draw(0, 1024);
 
             MemoryStream ms = new();
             bitmap.Save(ms, ImageFormat.Png);
             byte[] byteImage = ms.ToArray();
 
-            return Convert.ToBase64String(byteImage);
+            return (Convert.ToBase64String(byteImage), bitmap.Width < 500 && bitmap.Height > 700);
         }
 
         string MakeId()
