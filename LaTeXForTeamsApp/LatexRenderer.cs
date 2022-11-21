@@ -81,10 +81,11 @@ namespace LaTeXForTeamsApp
         {
             SvgDocument svg = await LatexToSvg(latex);
 
-            Bitmap bitmap = svg.Draw();
-
+            Bitmap bitmap = svg.Draw(1024, 0);
+            if (bitmap.Height > 1024) bitmap = svg.Draw(0, 1024); 
 
             MemoryStream ms = new();
+            Console.WriteLine($"WxH:{bitmap.Width}x{bitmap.Height}");
             bitmap.Save(ms, ImageFormat.Png);
             byte[] byteImage = ms.ToArray();
 

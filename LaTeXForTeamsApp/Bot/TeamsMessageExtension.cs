@@ -37,7 +37,6 @@ public class TeamsMessageExtension : TeamsActivityHandler
             Url = "data:image/png;base64," + png
         };
 
-
         var card = new HeroCard
         {
             Title = "Title",
@@ -53,6 +52,7 @@ public class TeamsMessageExtension : TeamsActivityHandler
             ContentType = HeroCard.ContentType,
             Preview = card.ToAttachment(),
         });
+
 
         return new MessagingExtensionActionResponse
         {
