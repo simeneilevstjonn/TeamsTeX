@@ -80,6 +80,8 @@ namespace LaTeXForTeamsApp
         {
             SvgDocument svg = await LatexToSvg(latex);
 
+            svg.Fill = new SvgColourServer(Color.White);
+
             Bitmap bitmap = svg.Draw(1024, 0);
             if (bitmap.Height > 1024) bitmap = svg.Draw(0, 1024); 
 
