@@ -46,12 +46,18 @@ public class TeamsMessageExtension : TeamsActivityHandler
         };
 
         var attachments = new List<MessagingExtensionAttachment>();
-        attachments.Add(new MessagingExtensionAttachment
+        /*attachments.Add(new MessagingExtensionAttachment
         {
             Content = card,
             ContentType = HeroCard.ContentType,
             Preview = card.ToAttachment(),
-        });
+        });*/
+        CardFactory cardFactory = new();
+        Attachment adaptCard = cardFactory.MakeAdaptiveCard(image.Url);
+
+        MessagingExtensionAttachment attach = AttachmentExtensions.ToMessagingExtensionAttachment(adaptCard, adaptCard);
+
+        attachments.Add(attach);
 
 
         return new MessagingExtensionActionResponse
