@@ -65,15 +65,14 @@ namespace LaTeXForTeamsApp
             Process dvisvgmProcess = Process.Start(dvisvgmStartInfo);
             await dvisvgmProcess.WaitForExitAsync();
 
-            // Read svg
-            //string svg = File.ReadAllText(string.Format("{0}/{1}/eqn.svg", WorkDir, id));
+            
+            SvgDocument document = SvgDocument.Open(string.Format("{0}/{1}/eqn.svg", WorkDir, id));
 
             // Cleanup
-            // Directory.Delete(string.Format("{0}/{1}", WorkDir, id), true);
+            Process delProcess = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+            await delProcess.WaitForExitAsync();
 
-            //return svg.ReplaceLineEndings("");
-
-            return SvgDocument.Open(string.Format("{0}/{1}/eqn.svg", WorkDir, id));
+            return document;
 
         }
 
@@ -85,7 +84,6 @@ namespace LaTeXForTeamsApp
             if (bitmap.Height > 1024) bitmap = svg.Draw(0, 1024); 
 
             MemoryStream ms = new();
-            Console.WriteLine($"WxH:{bitmap.Width}x{bitmap.Height}");
             bitmap.Save(ms, ImageFormat.Png);
             byte[] byteImage = ms.ToArray();
 
