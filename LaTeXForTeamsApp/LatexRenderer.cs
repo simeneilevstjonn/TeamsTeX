@@ -15,6 +15,7 @@ using System.Collections;
 using System.Drawing.Imaging;
 using System.Drawing;
 using static System.Net.Mime.MediaTypeNames;
+using LaTeXForTeamsApp.Exceptions;
 
 namespace LaTeXForTeamsApp
 {
@@ -52,8 +53,21 @@ namespace LaTeXForTeamsApp
                 FileName = "C:\\Windows\\System32\\wsl.exe",
                 Arguments = "timeout 5 latex -no-shell-escape -interaction=nonstopmode -halt-on-error eqn.tex"
             };
-            Process latexProcess = Process.Start(latexStartInfo);
-            await latexProcess.WaitForExitAsync();
+            
+            try
+            {
+                Process latexProcess = Process.Start(latexStartInfo);
+                await latexProcess.WaitForExitAsync();
+            }
+            catch 
+            {
+                // Cleanup
+                Process delp = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+                await delp.WaitForExitAsync();
+
+                throw new LatexException();
+            }
+            
 
             // Convert to svg
             ProcessStartInfo dvisvgmStartInfo = new()
@@ -62,15 +76,40 @@ namespace LaTeXForTeamsApp
                 FileName = "C:\\Windows\\System32\\wsl.exe",
                 Arguments = "timeout 5 dvisvgm --no-font --exact eqn.dvi"
             };
-            Process dvisvgmProcess = Process.Start(dvisvgmStartInfo);
-            await dvisvgmProcess.WaitForExitAsync();
-
             
-            SvgDocument document = SvgDocument.Open(string.Format("{0}/{1}/eqn.svg", WorkDir, id));
+            try
+            {
+                Process dvisvgmProcess = Process.Start(dvisvgmStartInfo);
+                await dvisvgmProcess.WaitForExitAsync();
+            }
+            catch
+            {
+                // Cleanup
+                Process delp = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+                await delp.WaitForExitAsync();
+
+                throw new LatexException();
+            }
+
+            SvgDocument document = null;
+
+            try
+            {
+                document = SvgDocument.Open(string.Format("{0}/{1}/eqn.svg", WorkDir, id));
+            }
+            catch
+            {
+                // Cleanup
+                Process delp = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+                await delp.WaitForExitAsync();
+
+                throw new LatexException();
+            }
 
             // Cleanup
             Process delProcess = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
             await delProcess.WaitForExitAsync();
+                        
 
             return document;
 

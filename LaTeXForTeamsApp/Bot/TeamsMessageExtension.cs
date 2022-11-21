@@ -1,4 +1,5 @@
 ﻿using CSharpMath.Rendering.FrontEnd;
+using LaTeXForTeamsApp.Exceptions;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
@@ -27,20 +28,36 @@ public class TeamsMessageExtension : TeamsActivityHandler
         var createCardData = ((JObject)action.Data).ToObject<CardResponse>();
 
         LatexRenderer renderer = new("C:/Users/Simen/AppData/Local/Temp");
-        (string, bool) img = await renderer.LatexToPngString(createCardData.Latex);
-        string url = "data:image/png;base64," + img.Item1;
+        List<MessagingExtensionAttachment> attachments = new();
 
-    
-        CardFactory cardFactory = new();
-        Attachment adaptCard = cardFactory.MakeAdaptiveCard(url, img.Item2);
-
-        MessagingExtensionAttachment attach = AttachmentExtensions.ToMessagingExtensionAttachment(adaptCard, adaptCard);
-
-        List<MessagingExtensionAttachment> attachments = new()
+        try 
         {
-            attach
-        };
+            (string, bool) img = await renderer.LatexToPngString(createCardData.Latex);
+            string url = "data:image/png;base64," + img.Item1;
+            
+            CardFactory cardFactory = new();
+            Attachment adaptCard = cardFactory.MakeAdaptiveCard(url, img.Item2);
 
+            MessagingExtensionAttachment attach = AttachmentExtensions.ToMessagingExtensionAttachment(adaptCard, adaptCard);
+
+            attachments.Add(attach);
+        }
+        catch (LatexException) 
+        {
+            // Failed to parse latex
+            HeroCard card = new()
+            {
+                Title = "LaTeX error",
+                Text = "Failed to parse LaTeX, please check validity"
+            };
+
+            attachments.Add(new()
+            {
+                Content = card,
+                ContentType = HeroCard.ContentType,
+                Preview = card.ToAttachment()
+            });
+        }
 
         return new MessagingExtensionActionResponse
         {
