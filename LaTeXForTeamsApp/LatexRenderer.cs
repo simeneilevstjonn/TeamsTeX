@@ -50,8 +50,8 @@ namespace LaTeXForTeamsApp
             ProcessStartInfo latexStartInfo = new()
             {
                 WorkingDirectory = string.Format("{0}/{1}", WorkDir, id),
-                FileName = "C:\\Windows\\System32\\wsl.exe",
-                Arguments = "timeout 5 latex -no-shell-escape -interaction=nonstopmode -halt-on-error eqn.tex"
+                FileName = "/usr/bin/timeout",
+                Arguments = "5 latex -no-shell-escape -interaction=nonstopmode -halt-on-error eqn.tex"
             };
             
             try
@@ -62,7 +62,7 @@ namespace LaTeXForTeamsApp
             catch 
             {
                 // Cleanup
-                Process delp = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+                Process delp = Process.Start("/bin/rm", string.Format("-rf {0}/{1}", WorkDir, id));
                 await delp.WaitForExitAsync();
 
                 throw new LatexException();
@@ -73,8 +73,8 @@ namespace LaTeXForTeamsApp
             ProcessStartInfo dvisvgmStartInfo = new()
             {
                 WorkingDirectory = string.Format("{0}/{1}", WorkDir, id),
-                FileName = "C:\\Windows\\System32\\wsl.exe",
-                Arguments = "timeout 5 dvisvgm --no-font --exact eqn.dvi"
+                FileName = "/usr/bin/timeout",
+                Arguments = "5 dvisvgm --no-font --exact eqn.dvi"
             };
             
             try
@@ -85,7 +85,7 @@ namespace LaTeXForTeamsApp
             catch
             {
                 // Cleanup
-                Process delp = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+                Process delp = Process.Start("/bin/rm", string.Format("-rf {0}/{1}", WorkDir, id));
                 await delp.WaitForExitAsync();
 
                 throw new LatexException();
@@ -100,14 +100,14 @@ namespace LaTeXForTeamsApp
             catch
             {
                 // Cleanup
-                Process delp = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+                Process delp = Process.Start("/bin/rm", string.Format("-rf {0}/{1}", WorkDir, id));
                 await delp.WaitForExitAsync();
 
                 throw new LatexException();
             }
 
             // Cleanup
-            Process delProcess = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+            Process delProcess = Process.Start("/bin/rm", string.Format("-rf {0}/{1}", WorkDir, id));
             await delProcess.WaitForExitAsync();
                         
 

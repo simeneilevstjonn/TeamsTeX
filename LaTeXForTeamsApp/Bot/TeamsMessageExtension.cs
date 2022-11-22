@@ -27,7 +27,7 @@ public class TeamsMessageExtension : TeamsActivityHandler
         // The user has chosen to create a card by choosing the 'Create Card' context menu command.
         var createCardData = ((JObject)action.Data).ToObject<CardResponse>();
 
-        LatexRenderer renderer = new("C:/Users/Simen/AppData/Local/Temp");
+        LatexRenderer renderer = new("/tmp");
         List<MessagingExtensionAttachment> attachments = new();
 
         try 
