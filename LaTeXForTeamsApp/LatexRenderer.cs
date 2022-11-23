@@ -139,7 +139,7 @@ namespace LaTeXForTeamsApp
         string DockerCommands { get => @"echo 'openout_any = p\nopenin_any = p' > /tmp/texmf.cnf
 export TEXMFCNF='/tmp:'
 timeout 5 latex -no-shell-escape -interaction=nonstopmode -halt-on-error /data/eqn.tex
-timeout 5 dvisvgm --no-fonts --eaxt eqn.dvi
+timeout 5 dvisvgm --no-fonts --exact eqn.dvi
 "; }
     }
 }
