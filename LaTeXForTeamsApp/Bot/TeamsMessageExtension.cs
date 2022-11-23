@@ -71,7 +71,7 @@ public class TeamsMessageExtension : TeamsActivityHandler
 
     internal class CardResponse
     {
-        public string Latex { get => Dollar ? Text : string.Format("${0}$", Text); }
+        public string Latex { get => Dollar ? Text : string.Format("\\[{0}\\]", Text); }
         public string Text { get; set; }
         public bool Dollar { get; set; }
     }
