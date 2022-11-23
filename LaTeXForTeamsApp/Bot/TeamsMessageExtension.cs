@@ -1,5 +1,4 @@
-﻿using CSharpMath.Rendering.FrontEnd;
-using LaTeXForTeamsApp.Exceptions;
+﻿using LaTeXForTeamsApp.Exceptions;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;

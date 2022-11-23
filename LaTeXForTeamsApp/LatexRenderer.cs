@@ -1,20 +1,15 @@
-﻿using CSharpMath.Atom.Atoms;
-using CSharpMath.Rendering.BackEnd;
+﻿
 using Microsoft.Bot.Schema;
 using Microsoft.VisualBasic;
 using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using static System.Formats.Asn1.AsnWriter;
-using Typography.OpenFont.Tables;
 using System.Diagnostics;
-using CSharpMath.Rendering.FrontEnd;
 using Svg;
 using System.Collections;
 using System.Drawing.Imaging;
 using System.Drawing;
-using static System.Net.Mime.MediaTypeNames;
 using LaTeXForTeamsApp.Exceptions;
 
 namespace LaTeXForTeamsApp
