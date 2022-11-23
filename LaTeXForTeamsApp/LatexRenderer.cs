@@ -152,6 +152,18 @@ namespace LaTeXForTeamsApp
 \begin{{document}}
 {0}
 \end{{document}}
-        ", latex);
+        ", Escape(latex));
+
+        string Escape(string input)
+        {
+            string[] scary = {"input", "include", "newread", "file", "openin", "read", "write", "line", "closein", "text", "loop", "unless", "if", "repeat", "fileline", "else", "usepackage", "catcode", "immediate", "write18", "url", "href"};
+
+            foreach (string s in scary) 
+            {
+                input = input.Replace("\\" + s, s);
+            }
+
+            return input;
+        }
     }
 }
