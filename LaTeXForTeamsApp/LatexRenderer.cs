@@ -156,7 +156,7 @@ namespace LaTeXForTeamsApp
 
         string Escape(string input)
         {
-            string[] scary = {"input", "include", "newread", "file", "openin", "read", "write", "line", "closein", "text", "loop", "unless", "if", "repeat", "fileline", "else", "usepackage", "catcode", "immediate", "write18", "url", "href"};
+            string[] scary = {"input", "include", "newread", "file", "openin", "read", "write", "line", "closein", "text", "loop", "unless", "if", "repeat", "fileline", "else", "usepackage", "catcode", "immediate", "write18", "url", "href", "newwrite", "outfile", "openout", "closeout", "def"};
 
             foreach (string s in scary) 
             {
