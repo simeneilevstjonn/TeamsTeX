@@ -40,19 +40,11 @@ namespace LaTeXForTeamsApp
             tex.Dispose();
 
 
-            // Compile latex
-            // Set working directory
-            ProcessStartInfo latexStartInfo = new()
-            {
-                WorkingDirectory = string.Format("{0}/{1}", WorkDir, id),
-                FileName = "/usr/bin/timeout",
-                Arguments = "5 latex -no-shell-escape -interaction=nonstopmode -halt-on-error eqn.tex"
-            };
-            
+            // Compile latex           
             try
             {
-                Process latexProcess = Process.Start(latexStartInfo);
-                await latexProcess.WaitForExitAsync();
+                Process docker = Process.Start("/usr/bin/sudo", $"docker run --rm -i -v {string.Format("{0}/{1}", WorkDir, id)}:/data blang/latex /bin/bash -c \"{DockerCommands}\"");
+                await docker.WaitForExitAsync();
             }
             catch 
             {
@@ -63,28 +55,6 @@ namespace LaTeXForTeamsApp
                 throw new LatexException();
             }
             
-
-            // Convert to svg
-            ProcessStartInfo dvisvgmStartInfo = new()
-            {
-                WorkingDirectory = string.Format("{0}/{1}", WorkDir, id),
-                FileName = "/usr/bin/timeout",
-                Arguments = "5 dvisvgm --no-font --exact eqn.dvi"
-            };
-            
-            try
-            {
-                Process dvisvgmProcess = Process.Start(dvisvgmStartInfo);
-                await dvisvgmProcess.WaitForExitAsync();
-            }
-            catch
-            {
-                // Cleanup
-                Process delp = Process.Start("/bin/rm", string.Format("-rf {0}/{1}", WorkDir, id));
-                await delp.WaitForExitAsync();
-
-                throw new LatexException();
-            }
 
             SvgDocument document = null;
 
@@ -165,5 +135,11 @@ namespace LaTeXForTeamsApp
 
             return input;
         }
+
+        string DockerCommands { get => @"echo 'openout_any = p\nopenin_any = p' > /tmp/texmf.cnf
+export TEXMFCNF='/tmp:'
+timeout 5 latex -no-shell-escape -interaction=nonstopmode -halt-on-error /data/eqn.tex
+timeout 5 dvisvgm --no-fonts --eaxt eqn.dvi
+"; }
     }
 }
