@@ -43,7 +43,7 @@ namespace LaTeXForTeamsApp
             // Compile latex           
             try
             {
-                Process docker = Process.Start("/usr/bin/sudo", $"docker run --rm -i -v {string.Format("{0}/{1}", WorkDir, id)}:/data blang/latex /bin/bash -c \"{DockerCommands}\"");
+                Process docker = Process.Start("/usr/bin/sudo", $"docker run --rm -i -v {string.Format("{0}/{1}", WorkDir, id)}:/data --net=none blang/latex /bin/bash -c \"{DockerCommands}\"");
                 await docker.WaitForExitAsync();
             }
             catch 
