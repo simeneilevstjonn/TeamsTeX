@@ -1,20 +1,15 @@
-﻿using CSharpMath.Atom.Atoms;
-using CSharpMath.Rendering.BackEnd;
+﻿
 using Microsoft.Bot.Schema;
 using Microsoft.VisualBasic;
 using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using static System.Formats.Asn1.AsnWriter;
-using Typography.OpenFont.Tables;
 using System.Diagnostics;
-using CSharpMath.Rendering.FrontEnd;
 using Svg;
 using System.Collections;
 using System.Drawing.Imaging;
 using System.Drawing;
-using static System.Net.Mime.MediaTypeNames;
 using LaTeXForTeamsApp.Exceptions;
 
 namespace LaTeXForTeamsApp
@@ -45,51 +40,21 @@ namespace LaTeXForTeamsApp
             tex.Dispose();
 
 
-            // Compile latex
-            // Set working directory
-            ProcessStartInfo latexStartInfo = new()
-            {
-                WorkingDirectory = string.Format("{0}/{1}", WorkDir, id),
-                FileName = "C:\\Windows\\System32\\wsl.exe",
-                Arguments = "timeout 5 latex -no-shell-escape -interaction=nonstopmode -halt-on-error eqn.tex"
-            };
-            
+            // Compile latex           
             try
             {
-                Process latexProcess = Process.Start(latexStartInfo);
-                await latexProcess.WaitForExitAsync();
+                Process docker = Process.Start("/usr/bin/sudo", $"docker run --rm -i -v {string.Format("{0}/{1}", WorkDir, id)}:/data --net=none blang/latex /bin/bash -c \"{DockerCommands}\"");
+                await docker.WaitForExitAsync();
             }
             catch 
             {
                 // Cleanup
-                Process delp = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+                Process delp = Process.Start("/bin/rm", string.Format("-rf {0}/{1}", WorkDir, id));
                 await delp.WaitForExitAsync();
 
                 throw new LatexException();
             }
             
-
-            // Convert to svg
-            ProcessStartInfo dvisvgmStartInfo = new()
-            {
-                WorkingDirectory = string.Format("{0}/{1}", WorkDir, id),
-                FileName = "C:\\Windows\\System32\\wsl.exe",
-                Arguments = "timeout 5 dvisvgm --no-font --exact eqn.dvi"
-            };
-            
-            try
-            {
-                Process dvisvgmProcess = Process.Start(dvisvgmStartInfo);
-                await dvisvgmProcess.WaitForExitAsync();
-            }
-            catch
-            {
-                // Cleanup
-                Process delp = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
-                await delp.WaitForExitAsync();
-
-                throw new LatexException();
-            }
 
             SvgDocument document = null;
 
@@ -100,14 +65,14 @@ namespace LaTeXForTeamsApp
             catch
             {
                 // Cleanup
-                Process delp = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+                Process delp = Process.Start("/bin/rm", string.Format("-rf {0}/{1}", WorkDir, id));
                 await delp.WaitForExitAsync();
 
                 throw new LatexException();
             }
 
             // Cleanup
-            Process delProcess = Process.Start("C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe", string.Format("rm -R {0}/{1}", WorkDir, id));
+            Process delProcess = Process.Start("/bin/rm", string.Format("-rf {0}/{1}", WorkDir, id));
             await delProcess.WaitForExitAsync();
                         
 
@@ -157,6 +122,24 @@ namespace LaTeXForTeamsApp
 \begin{{document}}
 {0}
 \end{{document}}
-        ", latex);
+        ", Escape(latex));
+
+        string Escape(string input)
+        {
+            string[] scary = {"input", "include", "newread", "file", "openin", "read", "write", "line", "closein", "text", "loop", "unless", "if", "repeat", "fileline", "else", "usepackage", "catcode", "immediate", "write18", "url", "href", "newwrite", "outfile", "openout", "closeout", "def"};
+
+            foreach (string s in scary) 
+            {
+                input = input.Replace("\\" + s, s);
+            }
+
+            return input;
+        }
+
+        string DockerCommands { get => @"echo 'openout_any = p\nopenin_any = p' > /tmp/texmf.cnf
+export TEXMFCNF='/tmp:'
+timeout 5 latex -no-shell-escape -interaction=nonstopmode -halt-on-error /data/eqn.tex
+timeout 5 dvisvgm --no-fonts --exact eqn.dvi
+"; }
     }
 }

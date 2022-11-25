@@ -1,5 +1,4 @@
-﻿using CSharpMath.Rendering.FrontEnd;
-using LaTeXForTeamsApp.Exceptions;
+﻿using LaTeXForTeamsApp.Exceptions;
 using Microsoft.Bot.Builder;
 using Microsoft.Bot.Builder.Teams;
 using Microsoft.Bot.Schema;
@@ -27,7 +26,7 @@ public class TeamsMessageExtension : TeamsActivityHandler
         // The user has chosen to create a card by choosing the 'Create Card' context menu command.
         var createCardData = ((JObject)action.Data).ToObject<CardResponse>();
 
-        LatexRenderer renderer = new("C:/Users/Simen/AppData/Local/Temp");
+        LatexRenderer renderer = new("/tmp");
         List<MessagingExtensionAttachment> attachments = new();
 
         try 
@@ -72,7 +71,7 @@ public class TeamsMessageExtension : TeamsActivityHandler
 
     internal class CardResponse
     {
-        public string Latex { get => Dollar ? Text : string.Format("${0}$", Text); }
+        public string Latex { get => Dollar ? Text : string.Format("\\[{0}\\]", Text); }
         public string Text { get; set; }
         public bool Dollar { get; set; }
     }
