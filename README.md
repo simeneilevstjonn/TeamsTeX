@@ -9,4 +9,4 @@ It also offers the ability to disable math mode, to write longer LaTeX blocks, w
 
 ## Attributions
 
-Parts of the backend is used from joeraut/latex2image-web Copyright (c) 2019 Joseph Rautenbach MIT License.
+Parts of the backend is used from [joeraut/latex2image-web](https://github.com/joeraut/latex2image-web) Copyright (c) 2019 Joseph Rautenbach MIT License.
